@@ -1,0 +1,37 @@
+---
+title: "Chapter 2 - Small Worlds and Large Worlds"
+author: "Florian Sckade"
+output: 
+  html_document:
+   theme: cosmo
+   highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, messages = FALSE)
+```
+
+All statistical modeling has two frames:  
+
+* The small world of the model itself: This is the *self-contained logical world of the model* 
+  without any surprises and with all possibilities nominated.
+* the large world in which we hope to deploy the model in: This is the broader context, which
+  very well might hold surprises. 
+  
+> The model is always an incomplete representation of the large world.
+  The bayesian model advantage is that  alternative model could make better use of the available
+  information in the data and thus support better decisions, **assuming** the small world is an
+  accurate description of the real world. 
+
+***
+
+## Building a Model
+
+1. Data story: Motivate the model by narrating how the data might arise.
+2. Update: Educate your model by feeding it the data.
+3. Evaluate: All statistical models require supervision, leading to model revision.
+
+### Data Story
+
+### Bayesian Updating
+
