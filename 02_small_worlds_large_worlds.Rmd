@@ -27,11 +27,98 @@ All statistical modeling has two frames:
 
 ## Building a Model
 
-1. Data story: Motivate the model by narrating how the data might arise.
-2. Update: Educate your model by feeding it the data.
-3. Evaluate: All statistical models require supervision, leading to model revision.
+1. **Data story**: Motivate the model by narrating how the data might arise.  
+  The story of how the data came to be can be descriptive or causal. The former specifies 
+  relationships used to predict outcomes, given observations, while the latter seeks to 
+  explain how some events produce other events. Any causal story can also be descriptive, 
+  but the other way around is rather difficult. A data story can be motivated by trying
+  to explain how each piece of data is created, which can include both the underlying 
+  reality as well as the sampling process. After formulating the data story, it needs to
+  be translated into a formal probability model.
+2. **Update**: Educate your model by feeding it the data.  
+  A Bayesian model begins with a prior set of plausibilities assigned to every possibility.
+  In light of data, these are update to produce the posterior plausibilities. 
+3. **Evaluate**: All statistical models require supervision, leading to model revision.  
+  The Bayesian model learns in an optimal way in the small world. Notes: (i) The model's
+  certainty is no guarantee that the model itself is a good one. Its inference can be very 
+  confident, but may be produced by a misleading model. (ii) The model's outputs need to
+  be supervised and critiqued in light of its assumptions. 
 
-### Data Story
+## Components of the model
 
-### Bayesian Updating
+Unobserved variables are usually called *parameters* and need to be inferred from other 
+variables, which can be observed. Once the variables are listed, each has to be defined.
+A distribution function assigned to an observed variable is called a *likelihood*.
+For every parameter the Bayesian machine has to consider, a distribution of prior 
+plausibility, the *prior*, has to be supplied. In the *subjective Bayesian* approach, 
+priors can be chosen according to the beliefs of the analyst in question. 
+Since priors are essentially assumptions, they should be interrogated as such - meaning
+different priors can be used to check how sensitive the inference of the model is to its
+assumptions. 
+
+> "No one is required to swear an oath to the assumptions of a model, and no set of 
+  assumptions deserves our obedience."  
+  
+## Bayes Theorem
+
+In this explanation from the book, $W$ and $L$ are counts of variables, while $p$ is the 
+unobserved variable. 
+
+The Bayesian model seeks to update all the prior distributions to their posterior 
+distributions. This function contains the releative plausibility of different parameter 
+values, given the data and model. Here, this is $\text{Pr}(p|W, L)$, the probability
+of each possible value of p, given the observed values of $W$ and $L$.
+
+The joint probability of the data $W$ and $L$ and any value of $p$ is:  
+$$\text{Pr}(W, L, P) = \text{Pr}(W, L \vert p)  \text{Pr}(p)$$  
+Meaning the probability of $W$, $L$ and $p$ is the product of $\text{Pr}(W, L \vert p)$ 
+and the prior probability$\text{Pr}(p)$. 
+In the same vein, the following is true:  
+$$\text{Pr}(W, L, p) = \text{Pr}(p \vert W, L) \text{Pr}(W, L)$$  
+Since both of these expressions are equal, this can be solved for the distribution of 
+interest:  
+$$
+\begin{aligned}
+\text{Pr}(W, L \vert p)\text{Pr}(p) & = \text{Pr}(p \vert W, L) \text{Pr}(W, L) \\ \\
+\text{Pr}(p|W,L) &  = \frac{\text{Pr}(W,L|p)\text{Pr}(p)}{\text{Pr}(W,L)}
+\end{aligned}
+$$
+In word form:
+
+$$\text{Posterior} = \frac{\text{Probability of data} \times \text{Prior}}
+{\text{Average Probability of data}}$$  
+
+Key takeaway: The posterior is proportional to the product of the prior and the probability 
+of the data. 
+
+> Bayesian data analysis is not about Bayes' theorem. Frequentists make use of it as well. 
+  Where Bayesian approaches differ, is their use of Bayes' theorem to quantify uncertainty 
+  about theoretical entities that cannot be observed (parameters, models). 
+
+## Motors
+
+### Grid Approximation
+
+1. Define the grid.
+2. Compute the value of the prior at each parameter value on the grid
+3. Compute the likelihood at each parameter value.
+4. Compute the unstandardized posterior at each parameter value, by multiplying the prior 
+   by the likelihood
+5. Standardize the posterior, by dividing each value by the sum of all values.
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+data.frame(p_grid = seq(0, 1, length.out = 20),                  # define grid
+           prior  = 1) %>%                                       # define prior
+  mutate(likelihood = dbinom(6, size = 9, prob = p_grid)) %>%    # calculate likelihood
+  mutate(unstd.posterior = likelihood * prior) %>%               # calculate posterior
+  mutate(posterior = unstd.posterior / sum(unstd.posterior)) %>% # std posterior
+  ggplot(aes(x = p_grid, y = posterior)) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "20 points",
+       x = "probability of water",
+       y = "posterior probability")
+```
 
