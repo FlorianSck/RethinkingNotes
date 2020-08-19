@@ -99,6 +99,8 @@ of the data.
 
 ### Grid Approximation
 
+Steps:  
+
 1. Define the grid.
 2. Compute the value of the prior at each parameter value on the grid
 3. Compute the likelihood at each parameter value.
@@ -107,9 +109,9 @@ of the data.
 5. Standardize the posterior, by dividing each value by the sum of all values.
 
 ```{r message=FALSE, warning=FALSE}
-library(dplyr)
-library(ggplot2)
-data.frame(p_grid = seq(0, 1, length.out = 20),                  # define grid
+library(tidyverse)
+library(patchwork)
+p1 <- data.frame(p_grid = seq(0, 1, length.out = 20),            # define grid
            prior  = 1) %>%                                       # define prior
   mutate(likelihood = dbinom(6, size = 9, prob = p_grid)) %>%    # calculate likelihood
   mutate(unstd.posterior = likelihood * prior) %>%               # calculate posterior
@@ -120,5 +122,96 @@ data.frame(p_grid = seq(0, 1, length.out = 20),                  # define grid
   labs(subtitle = "20 points",
        x = "probability of water",
        y = "posterior probability")
+
+p2 <- data.frame(p_grid = seq(0, 1, length.out = 5),             # define grid
+           prior  = 1) %>%                                       # define prior
+  mutate(likelihood = dbinom(6, size = 9, prob = p_grid)) %>%    # calculate likelihood
+  mutate(unstd.posterior = likelihood * prior) %>%               # calculate posterior
+  mutate(posterior = unstd.posterior / sum(unstd.posterior)) %>% # std posterior
+  ggplot(aes(x = p_grid, y = posterior)) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "5 points",
+       x = "probability of water",
+       y = "posterior probability")
+
+p2 | p1
 ```
 
+### Quadratic Approximations
+
+Under pretty general conditions, the region near the peak of the posterior distribution 
+will be nearly Gaussian / normal, which means the posterior can be approximated by a 
+Gaussian distribution. 
+The normal distribution is nice, because it is completely defined by its $\mu$ and 
+$\sigma^2$.
+This is called *quadratic approximation*, because the log of 
+the normal distribution is a parabola, which is a quadratic function. This means that 
+the quadratic approximation represents any log-posterior with a parabola. 
+
+Steps:  
+
+1. Find the posterior mode. Usually done via some optimization over the posterior 
+   distribution.  
+2. Estimate the curvature around the mode, to then compute a quadratic approximation
+   of the complete posterior distribution.
+   
+The book utilizes the function `quaop()` from the `rethinking` package to compute this
+approximation.
+
+```{r message=FALSE, warning=FALSE}
+library(rethinking)
+
+globe.qa <- quap(
+  alist(
+    W ~ dbinom(W + L, p), # binomial likelihood
+    p ~ dunif(0, 1)       # uniform prior
+  ),
+  data = list(W = 6, L = 3)
+  )
+
+precis(globe.qa)
+```
+This means, *assuming the posterior distribution is gaussian*, it has a mean of $p  = 0.67$
+and its standard deviation is $0.16$.
+
+
+```{r}
+# taken from statistical rethinking recoded
+n_grid <- 100
+
+data <- tibble(p_grid                  = seq(from = 0, to = 1, length.out = n_grid) %>% rep(., times = 3),
+       prior                   = 1,
+       w                       = rep(c(6, 12, 24), each = n_grid),
+       n                       = rep(c(9, 18, 36), each = n_grid),
+       m                       = .67,
+       s                       = rep(c(.16, .11, .08), each = n_grid)) %>%
+  mutate(likelihood            = dbinom(w, size = n, prob = p_grid)) %>%
+  mutate(unstd_grid_posterior  = likelihood * prior,
+         unstd_quad_posterior  = dnorm(p_grid, m, s)) %>%
+  group_by(w) %>% 
+  mutate(grid_posterior        = unstd_grid_posterior / sum(unstd_grid_posterior),
+         quad_posterior        = unstd_quad_posterior / sum(unstd_quad_posterior),
+         n = str_c("n = ", n)) %>% 
+  mutate(n = factor(n, levels = c("n = 9", "n = 18", "n = 36"))) 
+
+data %>% 
+  ggplot(aes(x = p_grid)) +
+  geom_line(aes(y = grid_posterior)) +
+  geom_line(aes(y = quad_posterior),
+            color = "grey50") +
+  labs(x = "proportion water",
+       y = "density") +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~n, scales = "free")
+```
+```{r}
+head(data)
+```
+
+Quadratic approximation tends to work better with more data. 
+
+### Markov chain Monte Carlo
+
+MCMC procedures draw samples from the posterior, instead of estimating
+the posterior distribution directly. More on this in Chapter 9.
