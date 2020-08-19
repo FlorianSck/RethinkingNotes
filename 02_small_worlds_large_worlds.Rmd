@@ -215,3 +215,16 @@ Quadratic approximation tends to work better with more data.
 
 MCMC procedures draw samples from the posterior, instead of estimating
 the posterior distribution directly. More on this in Chapter 9.
+
+## Summary
+
+Bayesian inference is, at its core, about inference based on a posterior
+probability distribution.  
+
+> "Posterior Probabilities state the relative numbers of ways each 
+   conjectured cause of the data could have produced the data. These
+   relative numbers indicate plausibilities of the different conjectures.
+   These plausiblities are updated in light of observations through Bayesian
+   updating."
+   
+   
