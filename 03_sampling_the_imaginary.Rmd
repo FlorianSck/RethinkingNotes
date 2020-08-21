@@ -1,0 +1,43 @@
+---
+title: "Sampling the Imaginary"
+author: "Florian Sckade"
+output: 
+  html_document:
+   theme: cosmo
+   highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Disclaimer: These are paraphrased or even direct quotes from the book. 
+
+Bayesian inference is distinguished by a broad view of probability, not by the use of
+Bayes' theorem. A central part explained here is the working with samples from the 
+posterior distribution, to make inference in the style of questions for the defined
+model easier. This is opposed to the classic integral calculus you utilize when 
+usually working with distribution functions. With this method, instead of using these
+mathematical formulas for integration, you can just use standard data summary methods-
+
+My favorite quote from the first section of the chapter:  
+
+> "No one has ever seen a probability"
+
+#### **Rethinking:** Hypothesis-Testing
+
+Scientific inference process: (1) An hypothesis is true or false; (2) we calculate a 
+statistical measure to determine if the hypothesis is likely to be true/false; (3) one
+*should* use Bayes theorem to deduce the impact of our measurement on the original 
+hypothesis. 
+The example: suppose the probability of a positive finding when the hypothesis is true 
+(*power*), is Pr(sig$|$true)$=0.95$, and that the probability of a positive finding 
+when the hypothesis is false is Pr(sig$|$false)$=0.05$ (*false positive rate*, like the
+conventional 5% in significance testing). Additionally, suppose that 1 in every 100 
+hypothesis is true, Pr(true)$=0.01$. 
+Thus, in this scenario, we can calculate Pr(true$|$pos)$=0.16$, meaning a positive finding
+corresponds to a probability of 16% that the hypothesis is true. An shrinking of the 
+false-positve rate to 1% does not solve this problem, merely improving the posterior
+probability to a 0.5. Pr(true) is the most essential rate in this setting, for which
+thinking is required, not testing. 
+
