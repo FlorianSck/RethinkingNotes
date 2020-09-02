@@ -31,13 +31,42 @@ statistical measure to determine if the hypothesis is likely to be true/false; (
 *should* use Bayes theorem to deduce the impact of our measurement on the original 
 hypothesis. 
 The example: suppose the probability of a positive finding when the hypothesis is true 
-(*power*), is Pr(sig$|$true)$=0.95$, and that the probability of a positive finding 
-when the hypothesis is false is Pr(sig$|$false)$=0.05$ (*false positive rate*, like the
+(*power*), is Pr(sig$|$true)=0.95, and that the probability of a positive finding 
+when the hypothesis is false is Pr(sig$|$false)=0.05 (*false positive rate*, like the
 conventional 5% in significance testing). Additionally, suppose that 1 in every 100 
-hypothesis is true, Pr(true)$=0.01$. 
-Thus, in this scenario, we can calculate Pr(true$|$pos)$=0.16$, meaning a positive finding
+hypothesis is true, Pr(true)=0.01. 
+Thus, in this scenario, we can calculate Pr(true$|$pos)=0.16, meaning a positive finding
 corresponds to a probability of 16% that the hypothesis is true. An shrinking of the 
 false-positve rate to 1% does not solve this problem, merely improving the posterior
 probability to a 0.5. Pr(true) is the most essential rate in this setting, for which
 thinking is required, not testing. 
+
+## Sampling
+
+Once a posterior distribution is estimated, samples can be drawn from it. In the first 
+place, this only recreates the density function we already calculated. However, these
+samples can also then be used to *describe* and *understand* the posterior, which is very
+important. 
+
+Common questions for summaries of posterior samples:
+
+* How much posterior probability lies below some parameter value?
+* How much posterior probability lies between two parameter values?
+* Which parameter value marks the lower 5% of the posterior probability?
+* Which range of parameter values contains 90% of the posterior probability?
+* Which parameter value has highest posterior probability?
+
+These questions can be divided into:  
+
+1. questions about intervals of defined boundaries, 
+2. questions about intervals of defined probability mass
+3. questions about point estimates. 
+
+Essentially, there are different types of intervals you can utilize to analyze the posterior. 
+For (1), this means setting an interval based on specific parameter values and analyzing,
+how much probability mass lies between these boundaries.
+In terms of defines mass (2), one can build *compatibility intervals*. These posterior
+intervals report two parameter values that contain between them a specified amount of 
+posterior probability. 
+
 

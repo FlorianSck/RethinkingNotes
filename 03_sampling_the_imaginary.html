@@ -376,7 +376,30 @@ summary {
 </blockquote>
 <div id="rethinking-hypothesis-testing" class="section level4">
 <h4><strong>Rethinking:</strong> Hypothesis-Testing</h4>
-<p>Scientific inference process: (1) An hypothesis is true or false; (2) we calculate a statistical measure to determine if the hypothesis is likely to be true/false; (3) one <em>should</em> use Bayes theorem to deduce the impact of our measurement on the original hypothesis. The example: suppose the probability of a positive finding when the hypothesis is true (<em>power</em>), is Pr(sig<span class="math inline">\(|\)</span>true)<span class="math inline">\(=0.95\)</span>, and that the probability of a positive finding when the hypothesis is false is Pr(sig<span class="math inline">\(|\)</span>false)<span class="math inline">\(=0.05\)</span> (<em>false positive rate</em>, like the conventional 5% in significance testing). Additionally, suppose that 1 in every 100 hypothesis is true, Pr(true)<span class="math inline">\(=0.01\)</span>. Thus, in this scenario, we can calculate Pr(true<span class="math inline">\(|\)</span>pos)<span class="math inline">\(=0.16\)</span>, meaning a positive finding corresponds to a probability of 16% that the hypothesis is true. An shrinking of the false-positve rate to 1% does not solve this problem, merely improving the posterior probability to a 0.5. Pr(true) is the most essential rate in this setting, for which thinking is required, not testing.</p>
+<p>Scientific inference process: (1) An hypothesis is true or false; (2) we calculate a statistical measure to determine if the hypothesis is likely to be true/false; (3) one <em>should</em> use Bayes theorem to deduce the impact of our measurement on the original hypothesis. The example: suppose the probability of a positive finding when the hypothesis is true (<em>power</em>), is Pr(sig<span class="math inline">\(|\)</span>true)=0.95, and that the probability of a positive finding when the hypothesis is false is Pr(sig<span class="math inline">\(|\)</span>false)=0.05 (<em>false positive rate</em>, like the conventional 5% in significance testing). Additionally, suppose that 1 in every 100 hypothesis is true, Pr(true)=0.01. Thus, in this scenario, we can calculate Pr(true<span class="math inline">\(|\)</span>pos)=0.16, meaning a positive finding corresponds to a probability of 16% that the hypothesis is true. An shrinking of the false-positve rate to 1% does not solve this problem, merely improving the posterior probability to a 0.5. Pr(true) is the most essential rate in this setting, for which thinking is required, not testing.</p>
+</div>
+<div id="sampling" class="section level2">
+<h2>Sampling</h2>
+<p>Once a posterior distribution is estimated, samples can be drawn from it. In the first place, this only recreates the density function we already calculated. However, these samples can also then be used to <em>describe</em> and <em>understand</em> the posterior, which is very important.</p>
+<p>Common questions for summaries of posterior samples:</p>
+<ul>
+<li>How much posterior probability lies below some parameter value?</li>
+<li>How much posterior probability lies between two parameter values?</li>
+<li>Which parameter value marks the lower 5% of the posterior probability?</li>
+<li>Which range of parameter values contains 90% of the posterior probability?</li>
+<li>Which parameter value has highest posterior probability?</li>
+</ul>
+<p>These questions can be divided into:</p>
+<ol style="list-style-type: decimal">
+<li>questions about intervals of defined boundaries,</li>
+</ol>
+<ul>
+<li>a</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>questions about intervals of defined probability mass</li>
+<li>questions about point estimates.</li>
+</ol>
 </div>
 
 
