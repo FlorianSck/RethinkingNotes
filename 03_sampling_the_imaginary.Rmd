@@ -41,7 +41,7 @@ false-positve rate to 1% does not solve this problem, merely improving the poste
 probability to a 0.5. Pr(true) is the most essential rate in this setting, for which
 thinking is required, not testing. 
 
-## Sampling
+## Sampling to summarize
 
 Once a posterior distribution is estimated, samples can be drawn from it. In the first 
 place, this only recreates the density function we already calculated. However, these
@@ -68,5 +68,22 @@ how much probability mass lies between these boundaries.
 In terms of defines mass (2), one can build *compatibility intervals*. These posterior
 intervals report two parameter values that contain between them a specified amount of 
 posterior probability. 
+Point estimates (3) depend on more information, as to what kind of summary statistic should 
+actually be utilized. The bayesian parameter estimate is precisely the posterior distribution,
+and as such, the decision on a point estimate to summarize this distribution is not trivial.
+When deciding between different point estimates (mode, mean, median), one can use *loss functions*. 
+Examples are *absolute loss*(leads to median) and *quadratic loss* (leads to posterior mean).
+
+## Sampling to simulate prediction
+
+Samples can be used to generate implied observations, which is useful because of:
+
+1. *Model Design*: Sample the prior to understand its implications.
+2. *Model checking*: Investigate model behavior after updating and check if it worked correctly.
+3. *Software validation*: Check if model fitting software works as expected.
+4. *Research design*: Simulate observations from the hypothesis, to evaluate research design. 
+                      (akin to power analysis)
+5. *Forecasting*: Samples can be used as predictions, but also as model criticism. 
+
 
 

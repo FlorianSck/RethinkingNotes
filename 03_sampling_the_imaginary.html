@@ -378,8 +378,8 @@ summary {
 <h4><strong>Rethinking:</strong> Hypothesis-Testing</h4>
 <p>Scientific inference process: (1) An hypothesis is true or false; (2) we calculate a statistical measure to determine if the hypothesis is likely to be true/false; (3) one <em>should</em> use Bayes theorem to deduce the impact of our measurement on the original hypothesis. The example: suppose the probability of a positive finding when the hypothesis is true (<em>power</em>), is Pr(sig<span class="math inline">\(|\)</span>true)=0.95, and that the probability of a positive finding when the hypothesis is false is Pr(sig<span class="math inline">\(|\)</span>false)=0.05 (<em>false positive rate</em>, like the conventional 5% in significance testing). Additionally, suppose that 1 in every 100 hypothesis is true, Pr(true)=0.01. Thus, in this scenario, we can calculate Pr(true<span class="math inline">\(|\)</span>pos)=0.16, meaning a positive finding corresponds to a probability of 16% that the hypothesis is true. An shrinking of the false-positve rate to 1% does not solve this problem, merely improving the posterior probability to a 0.5. Pr(true) is the most essential rate in this setting, for which thinking is required, not testing.</p>
 </div>
-<div id="sampling" class="section level2">
-<h2>Sampling</h2>
+<div id="sampling-to-summarize" class="section level2">
+<h2>Sampling to summarize</h2>
 <p>Once a posterior distribution is estimated, samples can be drawn from it. In the first place, this only recreates the density function we already calculated. However, these samples can also then be used to <em>describe</em> and <em>understand</em> the posterior, which is very important.</p>
 <p>Common questions for summaries of posterior samples:</p>
 <ul>
@@ -392,13 +392,20 @@ summary {
 <p>These questions can be divided into:</p>
 <ol style="list-style-type: decimal">
 <li>questions about intervals of defined boundaries,</li>
-</ol>
-<ul>
-<li>a</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
 <li>questions about intervals of defined probability mass</li>
 <li>questions about point estimates.</li>
+</ol>
+<p>Essentially, there are different types of intervals you can utilize to analyze the posterior. For (1), this means setting an interval based on specific parameter values and analyzing, how much probability mass lies between these boundaries. In terms of defines mass (2), one can build <em>compatibility intervals</em>. These posterior intervals report two parameter values that contain between them a specified amount of posterior probability. Point estimates (3) depend on more information, as to what kind of summary statistic should actually be utilized. The bayesian parameter estimate is precisely the posterior distribution, and as such, the decision on a point estimate to summarize this distribution is not trivial. When deciding between different point estimates (mode, mean, median), one can use <em>loss functions</em>. Examples are <em>absolute loss</em>(leads to median) and <em>quadratic loss</em> (leads to posterior mean).</p>
+</div>
+<div id="sampling-to-simulate-prediction" class="section level2">
+<h2>Sampling to simulate prediction</h2>
+<p>Samples can be used to generate implied observations, which is useful because of:</p>
+<ol style="list-style-type: decimal">
+<li><em>Model Design</em>: Sample the prior to understand its implications.</li>
+<li><em>Model checking</em>: Investigate model behavior after updating and check if it worked correctly.</li>
+<li><em>Software validation</em>: Check if model fitting software works as expected.</li>
+<li><em>Research design</em>: Simulate observations from the hypothesis, to evaluate research design. (akin to power analysis)</li>
+<li><em>Forecasting</em>: Samples can be used as predictions, but also as model criticism.</li>
 </ol>
 </div>
 
