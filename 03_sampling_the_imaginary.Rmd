@@ -8,7 +8,12 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE,  message = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(rethinking)
+library(tidyverse)
 ```
 
 Disclaimer: These are paraphrased or even direct quotes from the book. 
@@ -74,6 +79,18 @@ and as such, the decision on a point estimate to summarize this distribution is 
 When deciding between different point estimates (mode, mean, median), one can use *loss functions*. 
 Examples are *absolute loss*(leads to median) and *quadratic loss* (leads to posterior mean).
 
+### Compatibility intervals:
+
+#### PI 
+For a given percentage number x, the percentile intervals (PI) find the middle x% probability. 
+Example: 80% posterior probability percentile interval would give the 10% and 90% quantiles as l
+lower and upper bounds to that interval.
+
+#### HDPI
+The Highest Posterior Density Interval gives the bounds for the narrowest interval containing
+the given probability mass x%. It always contains the parameter with the highest posterior 
+probability. 
+
 ## Sampling to simulate prediction
 
 Samples can be used to generate implied observations, which is useful because of:
@@ -84,6 +101,7 @@ Samples can be used to generate implied observations, which is useful because of
 4. *Research design*: Simulate observations from the hypothesis, to evaluate research design. 
                       (akin to power analysis)
 5. *Forecasting*: Samples can be used as predictions, but also as model criticism. 
+
 
 
 # Exercises
@@ -229,7 +247,7 @@ while(found == FALSE) {
   value <- find_interval(N)
   if(value <= 0.05) {
     value <- round(value, 4)
-    print(paste0("PI with width = ", value," found for N = ", N))
+    print(paste0("PI with width p = ", value," found for N = ", N))
     found <- TRUE
   } else {
     N <- N + 100
@@ -242,6 +260,8 @@ while(found == FALSE) {
 #### Hard Data
 ```{r}
 data(homeworkch3)
+head(birth1)
+head(birth2)
 ```
 
 #### 3H1 
@@ -249,7 +269,18 @@ Using grid approximation, compute the posterior distribution for the
 probability of a birth being a boy. Assume a uniform prior probability. 
 Which parameter value maximizes the posterior probability?
 ```{r}
+males <- sum(birth1) + sum(birth2)
+N <- length(birth1) + length(birth2)
 
+# create grid of probabilities
+p_grid <- seq(from=0, to=1, length.out = 10000)
+# create uniform prior
+prior <- rep(1, 10000)
+# calculate likelihood over p_grid
+likelihood <- dbinom(males, size=N, prob = p_grid)
+posterior <- likelihood * prior
+posterior <- posterior / sum(posterior)
+plot(x = p_grid, y = posterior)
 ```
 
 #### 3H2 
@@ -257,7 +288,10 @@ Using the `sample` function, draw 10,000 random parameter values from
 the posterior distribution you calculated above. Use these sample to 
 estimate the 50%, 89%, and 97% highest posterior density intervals.
 ```{r}
+samples <- sample(p_grid, 1e4, replace = TRUE, prob = posterior)
 
+# intervals:
+HPDI(samples, c(.5, .89, .97))
 ```
 
 #### 3H3
@@ -266,29 +300,50 @@ up with 10,000 numbers, each one a count of boys out of 200 births.
 Compare the distribution of predicted numbers of boys to the actual count 
 in the data (111 boys out of 200 births). There are many good ways to
 visualize the simulations, but the dens command (part of the rethinking package) 
-is prbably the easiest way in this case. Does it look like the model fits the 
+is probably the easiest way in this case. Does it look like the model fits the 
 data well? That is, does the distribution of predictions include the actual 
 observation as a central, likely outcome?
 ```{r}
+sampled_births <- rbinom(1e4, size = 200, prob = samples)
 
+tibble(male_births = sampled_births) %>% 
+  ggplot(aes(x = male_births)) + 
+  geom_density() + geom_vline(xintercept = males) + 
+  labs(x = "Number of Boys in 200 births")
 ```
+
+Yeah, the actual number of male births in our sample of 200 is pretty much in the middle of this distribution.
 
 #### 3H4
-Now compare 10,000 counts of boys from 100 simulated first borns only the number 
+Now compare 10,000 counts of boys from 100 simulated first borns only to the number 
 of boys in the first births, birth1. How does the model look in this light?
 ```{r}
+sampled_births <- rbinom(1e4, size = 100, prob = samples)
 
+tibble(male_births = sampled_births) %>% 
+  ggplot(aes(x = male_births)) + 
+  geom_density() + geom_vline(xintercept = sum(birth1)) + 
+  labs(x = "Number of Boys in 100 births")
 ```
+Looks less good, still okay.
 
 #### 3H5
-The model assumes that sex of first and second births are independent. To check
-this assumption, focus now on second births that followed female first borns.
-Compare 10,000 simulated conts of boys to only those second births that followed 
-girls. To do this correctly, you need to count the number of first borns who were girls 
-and simulate that many births, 10,000 times. Compare the counts of boys in your 
-simulations to the actual observed count of boys following girls. 
-How does the model look in this light? Any guesses what is going on in these data?
+The model assumes that sex of first and second births are independent. To check this assumption, focus now on second births that followed female first borns. Compare 10,000 simulated counts of boys to only those second births that followed girls. Compare the counts of boys in your simulations to the actual observed count of boys following girls. How does the model look in this light? Any guesses what is going on in these data?
 ```{r}
+# find all the second births which followed a girl 
+births_after_girls <- birth2[birth1 == 0]
 
+# sanity check: 
+sum(birth1 == 0) == length(births_after_girls)
+
+# we draw from our simulation, draws of size of number of births after a girl (49)
+sampled_births <- rbinom(1e4, size=length(births_after_girls), prob = samples)
+
+
+tibble(male_births = sampled_births) %>% 
+  ggplot(aes(x = male_births)) + 
+  geom_density() + geom_vline(xintercept = sum(births_after_girls)) + 
+  labs(x = "Number of second born boys after girls")
 ```
 
+Not a good fit. It seems that gender of birth is correlated between first and second born. 
