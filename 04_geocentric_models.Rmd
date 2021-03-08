@@ -1,0 +1,21 @@
+---
+title: "Geocentric Models"
+output: html_document
+output: 
+  html_document:
+   theme: cosmo
+   highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 4.3 Gaussian Model of Height
+
+```{r}
+library(rethinking) 
+data(Howell1)
+d <- Howell1
+```
+
